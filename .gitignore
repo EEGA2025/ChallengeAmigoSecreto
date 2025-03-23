@@ -3,7 +3,7 @@ node_modules/
 
 # Ignorar archivos de configuración sensibles
 .env
-node_modules/
+
 # Ignorar archivos de configuraciones de IDEs
 .vscode/
 .idea/
