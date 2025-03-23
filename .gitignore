@@ -1,0 +1,13 @@
+# Ignorar la carpeta node_modules si usas Node.js
+node_modules/
+
+# Ignorar archivos de configuración sensibles
+.env
+node_modules/
+# Ignorar archivos de configuraciones de IDEs
+.vscode/
+.idea/
+
+# Archivos específicos del sistema operativo
+.DS_Store
+Thumbs.db
