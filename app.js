@@ -1,65 +1,60 @@
+// Array to hold friends' names
 let amigos = [];
 
-// Función para agregar un amigo a la lista
+document.addEventListener('DOMContentLoaded', () => {
+    // Add event listener for "Añadir" button
+    const addButton = document.getElementById('addButton');
+    addButton.addEventListener('click', agregarAmigo);
+
+    // Add event listener for "Sortear amigo" button
+    const drawButton = document.getElementById('drawButton');
+    drawButton.addEventListener('click', sortearAmigo);
+});
+
 function agregarAmigo() {
     const amigoInput = document.getElementById('amigo');
-    const nombreAmigo = amigoInput.value.trim(); // Eliminar espacios innecesarios
+    const amigoNombre = amigoInput.value.trim();
 
-    if (nombreAmigo === '') {
-        alert('Por favor, inserte un nombre.');
-        return;
-    }
+    if (amigoNombre) {
+        // Add amigo to the list of friends
+        amigos.push(amigoNombre);
 
-    amigos.push(nombreAmigo);
-    amigoInput.value = '';
-    mostrarListaAmigos();
-}
+        // Update the list of friends in the UI
+        const listaAmigos = document.getElementById('listaAmigos');
+        const li = document.createElement('li');
+        li.textContent = amigoNombre;
+        listaAmigos.appendChild(li);
 
-// Función para mostrar la lista de amigos en la interfaz
-function mostrarListaAmigos() {
-    const listaAmigos = document.getElementById('listaAmigos');
-    listaAmigos.innerHTML = ''; 
-
-    amigos.forEach((amigo) => {
-        const listItem = document.createElement('li');
-        listItem.textContent = amigo;
-        listaAmigos.appendChild(listItem);
-    });
-}
-
-// Función para mezclar los elementos de un array de manera aleatoria
-function mezclarArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]]; // Intercambiar elementos
+        // Clear the input field
+        amigoInput.value = '';
+    } else {
+        alert("Por favor, ingrese un nombre.");
     }
 }
 
-// Función para realizar el sorteo de un amigo secreto
 function sortearAmigo() {
     if (amigos.length < 2) {
-        alert('Se necesitan al menos dos amigos para realizar el sorteo.');
+        alert("Por favor, agrega al menos dos amigos para hacer el sorteo.");
         return;
     }
 
-    const amigosMezclados = [...amigos];
-    mezclarArray(amigosMezclados);
-
-    let asignaciones = '';
-    for (let i = 0; i < amigos.length; i++) {
-        const amigo = amigos[i];
-        let amigoSecreto;
-
-        do {
-            amigoSecreto = amigosMezclados[i === amigos.length - 1 ? 0 : i + 1];
-        } while (amigoSecreto === amigo);
-
-        asignaciones += `<p><strong>${amigo}</strong> es el amigo secreto de <strong>${amigoSecreto}</strong></p>`;
+    // Shuffle the friends list to randomize the assignment
+    const shuffledAmigos = [...amigos];
+    for (let i = shuffledAmigos.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledAmigos[i], shuffledAmigos[j]] = [shuffledAmigos[j], shuffledAmigos[i]]; // Swap elements
     }
 
-    const resultado = document.getElementById('resultado');
-    resultado.innerHTML = asignaciones;
-}
+    // Display the results
+    const resultadoElement = document.getElementById('resultado');
+    resultadoElement.innerHTML = ''; // Clear previous results
 
-// Remove the event listener as it is not needed
-// document.getElementById('sortearButton').addEventListener('click', sortearAmigo);
+    // Now, each friend will be paired with the next one in the shuffled list (circular pairing)
+    shuffledAmigos.forEach((amigo, index) => {
+        const secretFriendIndex = (index + 1) % shuffledAmigos.length; // Circular pairing
+        const secretFriend = shuffledAmigos[secretFriendIndex];
+        const li = document.createElement('li');
+        li.textContent = `${amigo} es el amigo secreto de ${secretFriend}`;
+        resultadoElement.appendChild(li);
+    });
+}
